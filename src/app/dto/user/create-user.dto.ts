@@ -7,8 +7,9 @@ import {
   IsString,
   MaxLength,
   MinLength,
+  Validate,
 } from 'class-validator';
-import { IsEmailUserAlreadyExist } from 'src/app/filter/validate-exception.filter';
+import { IsEmailAlreadyExist } from 'src/app/validator/email-exist.validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -19,9 +20,7 @@ export class CreateUserDto {
   @IsString()
   @MaxLength(100)
   @IsNotEmpty({})
-  @IsEmailUserAlreadyExist({
-    message: 'Email exist',
-  })
+  @Validate(IsEmailAlreadyExist)
   readonly email: string;
 
   @ApiProperty({

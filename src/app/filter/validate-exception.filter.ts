@@ -3,16 +3,8 @@ import {
   BadRequestException,
   Catch,
   ExceptionFilter,
-  Injectable,
 } from '@nestjs/common';
-import {
-  ValidationOptions,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-  registerDecorator,
-} from 'class-validator';
 import { Response } from 'express';
-import { UserService } from '../services/user.service';
 
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {
@@ -49,26 +41,4 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     }
     return response;
   }
-}
-
-@ValidatorConstraint({ name: 'IsEmailUserAlreadyExist', async: true })
-@Injectable()
-export class IsEmailExistConstraint implements ValidatorConstraintInterface {
-  constructor(protected readonly userService: UserService) {}
-  async validate(value: string) {
-    const user = this.userService.getDetailUserByField('email', value);
-    return !user;
-  }
-}
-
-export function IsEmailUserAlreadyExist(validationOptions?: ValidationOptions) {
-  return function (object: any, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      constraints: [],
-      validator: IsEmailExistConstraint,
-    });
-  };
 }

@@ -1,10 +1,11 @@
 import { CreateUserDto } from './../dto/user/create-user.dto';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Global, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/database/schemas/user.schema';
 import { IUser } from '../types/user';
 
+@Global()
 @Injectable()
 export class UserService {
   constructor(
