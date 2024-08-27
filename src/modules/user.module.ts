@@ -6,8 +6,6 @@ import { User, UserSchema } from 'src/database/schemas/user.schema';
 
 @Global()
 @Module({
-  controllers: [UserController],
-  providers: [UserService],
   imports: [
     MongooseModule.forFeatureAsync([
       {
@@ -21,6 +19,8 @@ import { User, UserSchema } from 'src/database/schemas/user.schema';
       },
     ]),
   ],
-  exports: [],
+  controllers: [UserController],
+  providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

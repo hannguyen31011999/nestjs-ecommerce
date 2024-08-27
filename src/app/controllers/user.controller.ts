@@ -12,8 +12,10 @@ import {
 import { ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { msgResponse } from 'src/common/constant';
 import { CreateUserDto } from '../dto/user/create-user.dto';
-import { UpdateActiveUserDto } from '../dto/user/update-active-dto';
-import { UpdateUserDto } from '../dto/user/update-user.dto';
+import {
+  UpdateActiveUserDto,
+  UpdateUserDto,
+} from '../dto/user/update-user.dto';
 import { EmailExistsPipe } from '../pipes/email-exist.pipe';
 import { NumberPhoneExistsPipe } from '../pipes/number-phone-exist.pipe';
 import { UserService } from '../services/user.service';

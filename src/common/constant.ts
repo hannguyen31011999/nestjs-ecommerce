@@ -5,6 +5,10 @@ export const defaultPagination = {
 };
 export const jwtConstants = {
   secret: '900150983cd24fb0d6963f7d28e17f72',
+  expired: {
+    access_token: '60m',
+    refresh_token: '7d',
+  },
 };
 
 export const msgResponse = {
@@ -13,6 +17,10 @@ export const msgResponse = {
     create: 'Create user successfully',
     update: 'Update user successfully',
     delete: 'Delete user successfully',
+  },
+  signIn: {
+    success: 'Signin successfully',
+    fail: 'Signin fail',
   },
   400: 'Bad request',
   500: 'Internal error server',

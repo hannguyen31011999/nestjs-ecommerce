@@ -72,3 +72,11 @@ export class UpdateUserDto {
   @IsString()
   readonly avatar: string;
 }
+
+export class UpdateActiveUserDto {
+  @ApiProperty({
+    default: true,
+    example: true,
+  })
+  readonly isActive: boolean;
+}
