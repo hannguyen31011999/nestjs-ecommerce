@@ -5,6 +5,7 @@ import {
   ExceptionFilter,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { msgResponse } from 'src/common/constant';
 
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {
@@ -18,7 +19,7 @@ export class ValidationExceptionFilter implements ExceptionFilter {
 
     const customResponse = {
       statusCode: status,
-      message: 'Validation failed',
+      message: msgResponse[422],
       errors: this.formatErrors(exceptionResponse),
     };
 

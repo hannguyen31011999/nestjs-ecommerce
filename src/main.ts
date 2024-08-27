@@ -1,3 +1,4 @@
+declare const module: any;
 import {
   BadRequestException,
   HttpStatus,
@@ -44,5 +45,10 @@ async function bootstrap() {
   SwaggerModule.setup('/api/swagger', app, document);
 
   await app.listen(3000);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 bootstrap();

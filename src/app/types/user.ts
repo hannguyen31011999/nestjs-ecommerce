@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+import { BaseFilterList, BasePagination } from './common';
 
 export interface IUser extends Document {
   readonly id: number;
@@ -13,4 +14,13 @@ export interface IUser extends Document {
   readonly avatar: string | null;
   readonly address: string | null;
   readonly gender: number;
+}
+
+export interface UserFilter extends BaseFilterList {
+  orderBy?: string;
+}
+
+export interface ResponseListUser {
+  data: Array<IUser>;
+  pagination: BasePagination;
 }

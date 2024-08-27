@@ -1,35 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
-  IsEmail,
   IsNotEmpty,
   IsNumber,
   IsString,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 
-export class CreateUserDto {
-  @ApiProperty({
-    default: 'example@gmail.com',
-    type: String,
-  })
-  @IsEmail()
-  @IsString()
-  @MaxLength(100)
-  @IsNotEmpty({})
-  readonly email: string;
-
-  @ApiProperty({
-    default: '123456',
-    type: String,
-  })
-  @IsString()
-  @MaxLength(100)
-  @MinLength(6)
-  @IsNotEmpty()
-  readonly password: string;
-
+export class UpdateUserDto {
   @ApiProperty({
     default: 'Example',
     type: String,
@@ -85,13 +63,6 @@ export class CreateUserDto {
   @IsNumber()
   @IsNotEmpty()
   readonly gender: number;
-
-  @ApiProperty({
-    default: '',
-    type: String,
-  })
-  @IsString()
-  readonly access_token: string;
 
   @ApiProperty({
     default:
