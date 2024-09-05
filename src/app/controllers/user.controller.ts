@@ -7,9 +7,16 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { msgResponse } from 'src/common/constant';
 import { CreateUserDto } from '../dto/user/create-user.dto';
 import {
@@ -21,9 +28,11 @@ import { NumberPhoneExistsPipe } from '../pipes/number-phone-exist.pipe';
 import { UserService } from '../services/user.service';
 import { IUser, ResponseListUser, UserFilter } from '../types/user';
 import { BaseController } from './base.controller';
-
+import { AccessTokenGuard } from '../guards/access-token.guard';
+@ApiBearerAuth()
 @ApiTags('user')
 @Controller('user')
+@UseGuards(AccessTokenGuard)
 export class UserController extends BaseController {
   constructor(private userService: UserService) {
     super(HttpStatus.BAD_REQUEST, 'Bad request');

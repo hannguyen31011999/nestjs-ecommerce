@@ -34,6 +34,7 @@ async function bootstrap() {
   // app.useGlobalFilters(new ValidationExceptionFilter());
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Swagger E-commerce')
     .setDescription('E-commerce api description')
     .setVersion('1.0')

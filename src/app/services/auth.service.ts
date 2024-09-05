@@ -28,24 +28,48 @@ export class AuthService extends BaseController {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return this.getResponse(null);
       const { accessToken, refreshToken } = await this.getTokens(user);
-      this.updateRefreshToken(user.id, accessToken);
+      await this.updateAccessToken(user.id, accessToken);
       this.setter(HttpStatus.OK, msgResponse.signIn.success);
-      return this.getResponse({ accessToken, refreshToken });
+      return this.getResponse({ accessToken, refreshToken, user });
     } catch (err) {
       throw new HttpException(msgResponse[400], HttpStatus.BAD_REQUEST);
     }
   }
 
-  async logout(id: string) {
-    return (await this.userService.getDetailUserByField('id', id)).updateOne({
-      access_token: '',
-    });
+  async logout(token: string) {
+    let statusCode: number = HttpStatus.OK;
+    let messageCode: string = msgResponse.signOut.success;
+    const user = await this.userService.getDetailUserByField(
+      'access_token',
+      token,
+    );
+    if (!user) {
+      statusCode = HttpStatus.BAD_REQUEST;
+      messageCode = msgResponse.signOut.fail;
+    }
+    this.setter(statusCode, messageCode);
+    await this.updateAccessToken(user.id, '');
+    return this.getResponse(null);
   }
 
-  async updateRefreshToken(id: string, accessToken: string) {
-    (await this.userService.getDetailUserByField('id', id)).updateOne({
-      access_token: accessToken,
-    });
+  async updateAccessToken(id: string, accessToken: string) {
+    await this.userService.updateUserByField(id, 'access_token', accessToken);
+  }
+
+  async refreshToken(token: string) {
+    let statusCode: number = HttpStatus.OK;
+    let messageCode: string = msgResponse.refreshToken.success;
+    const user: IUser = await this.userService.getDetailUserByField(
+      'refresh_token',
+      token,
+    );
+    if (!user) {
+      statusCode = HttpStatus.BAD_REQUEST;
+      messageCode = msgResponse[400];
+    }
+    const { refreshToken } = await this.getTokens(user);
+    this.setter(statusCode, messageCode);
+    return this.getResponse({ refreshToken });
   }
 
   async getTokens(user: IUser) {

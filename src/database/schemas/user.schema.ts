@@ -62,6 +62,11 @@ export class User {
   @Prop({
     type: String,
   })
+  refresh_token;
+
+  @Prop({
+    type: String,
+  })
   birth_date;
 
   @Prop({

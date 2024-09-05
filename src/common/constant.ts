@@ -22,6 +22,13 @@ export const msgResponse = {
     success: 'Signin successfully',
     fail: 'Signin fail',
   },
+  signOut: {
+    success: 'Logout successfully',
+    fail: 'Access denied',
+  },
+  refreshToken: {
+    success: 'Refresh token successfully',
+  },
   400: 'Bad request',
   500: 'Internal error server',
   422: 'Validate failed',

@@ -51,9 +51,9 @@ export class UserService {
     }
   }
 
-  async getDetailUserByField<T>(field: string, value: T) {
+  async getDetailUserByField<T>(properties: keyof IUser, value: T) {
     const user = await this.userModel.findOne({
-      [field]: value,
+      [properties]: value,
     });
     return user;
   }
@@ -109,7 +109,32 @@ export class UserService {
         )
         .exec();
       if (user) return user;
-      return user;
+      return null;
+    } catch (err) {
+      throw new HttpException(msgResponse[400], HttpStatus.BAD_REQUEST);
+    }
+  }
+  async updateUserByField<T>(
+    id: string,
+    properties: keyof IUser,
+    value: T,
+  ): Promise<IUser> {
+    try {
+      const user = await this.userModel
+        .findOneAndUpdate(
+          {
+            id,
+          },
+          {
+            [properties]: value,
+          },
+          {
+            new: true,
+          },
+        )
+        .exec();
+      if (user) return user;
+      return null;
     } catch (err) {
       throw new HttpException(msgResponse[400], HttpStatus.BAD_REQUEST);
     }

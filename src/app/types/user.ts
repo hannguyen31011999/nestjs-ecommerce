@@ -10,6 +10,7 @@ export interface IUser extends Document {
   readonly phone_number: string;
   readonly is_active: boolean;
   readonly access_token: string | null;
+  readonly refresh_token: string | null;
   readonly birth_date: string | null;
   readonly avatar: string | null;
   readonly address: string | null;
