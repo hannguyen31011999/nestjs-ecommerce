@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { msgResponse } from 'src/common/constant';
-import { SignInDto } from '../dto/auth/auth.dto';
+import { RefreshTokenDto, SignInDto } from '../dto/auth/auth.dto';
 import { AccessTokenGuard } from '../guards/access-token.guard';
 import { AuthService } from '../services/auth.service';
 import { BaseController } from './base.controller';
@@ -25,5 +25,13 @@ export class AuthController extends BaseController {
   @Post('sign-out')
   async signOut(@Auth('user') user: IUser) {
     return this.authService.logout(user.access_token);
+  }
+
+  @ApiBody({
+    type: RefreshTokenDto,
+  })
+  @Post('refresh-token')
+  async refreshToken(@Body('refresh_token') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
   }
 }

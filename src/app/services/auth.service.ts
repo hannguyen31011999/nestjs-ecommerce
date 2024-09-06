@@ -28,7 +28,7 @@ export class AuthService extends BaseController {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return this.getResponse(null);
       const { accessToken, refreshToken } = await this.getTokens(user);
-      await this.updateAccessToken(user.id, accessToken);
+      await this.updateToken(user.id, accessToken, refreshToken);
       this.setter(HttpStatus.OK, msgResponse.signIn.success);
       return this.getResponse({ accessToken, refreshToken, user });
     } catch (err) {
@@ -48,17 +48,19 @@ export class AuthService extends BaseController {
       messageCode = msgResponse.signOut.fail;
     }
     this.setter(statusCode, messageCode);
-    await this.updateAccessToken(user.id, '');
+    await this.updateToken(user.id, '', '');
     return this.getResponse(null);
   }
 
-  async updateAccessToken(id: string, accessToken: string) {
+  async updateToken(id: string, accessToken: string, refreshToken: string) {
     await this.userService.updateUserByField(id, 'access_token', accessToken);
+    await this.userService.updateUserByField(id, 'refresh_token', refreshToken);
   }
 
   async refreshToken(token: string) {
     let statusCode: number = HttpStatus.OK;
     let messageCode: string = msgResponse.refreshToken.success;
+    let data: { accessToken: string; refreshToken: string } | null = null;
     const user: IUser = await this.userService.getDetailUserByField(
       'refresh_token',
       token,
@@ -66,10 +68,13 @@ export class AuthService extends BaseController {
     if (!user) {
       statusCode = HttpStatus.BAD_REQUEST;
       messageCode = msgResponse[400];
+    } else {
+      const { refreshToken, accessToken } = await this.getTokens(user);
+      await this.updateToken(user.id.toString(), accessToken, refreshToken);
+      data = { refreshToken, accessToken };
     }
-    const { refreshToken } = await this.getTokens(user);
     this.setter(statusCode, messageCode);
-    return this.getResponse({ refreshToken });
+    return this.getResponse(data);
   }
 
   async getTokens(user: IUser) {
