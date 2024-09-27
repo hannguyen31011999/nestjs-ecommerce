@@ -15,6 +15,8 @@ export interface IUser extends Document {
   readonly avatar: string | null;
   readonly address: string | null;
   readonly gender: number;
+  readonly created_at: string;
+  readonly updated_at: string;
 }
 
 export interface UserFilter extends BaseFilterList {

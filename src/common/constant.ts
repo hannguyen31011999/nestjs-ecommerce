@@ -29,6 +29,12 @@ export const msgResponse = {
   refreshToken: {
     success: 'Refresh token successfully',
   },
+  role: {
+    read: 'Get data role successfully',
+    create: 'Create role successfully',
+    update: 'Update role successfully',
+    delete: 'Delete role successfully',
+  },
   400: 'Bad request',
   500: 'Internal error server',
   422: 'Validate failed',

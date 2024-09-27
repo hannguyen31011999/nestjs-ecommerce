@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './modules/user.module';
 import { AuthModule } from './modules/auth.module';
+import { RoleModule } from './modules/role.module';
 const mongooseURL = 'mongodb://localhost:27017/';
 @Module({
   imports: [
@@ -10,6 +11,7 @@ const mongooseURL = 'mongodb://localhost:27017/';
     }),
     UserModule,
     AuthModule,
+    RoleModule,
   ],
   controllers: [],
   providers: [],

@@ -1,6 +1,5 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
-@Injectable()
 export class BaseController {
   private statusCode: number = HttpStatus.OK;
   private message: string = '';

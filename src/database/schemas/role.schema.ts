@@ -36,6 +36,16 @@ export class Role {
   permission_id;
 
   @Prop({
+    type: String,
+  })
+  created_at;
+
+  @Prop({
+    type: String,
+  })
+  updated_at;
+
+  @Prop({
     type: Boolean,
   })
   deleted_at;

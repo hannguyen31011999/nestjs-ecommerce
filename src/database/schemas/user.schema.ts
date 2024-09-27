@@ -84,6 +84,16 @@ export class User {
     type: Number,
   })
   gender;
+
+  @Prop({
+    type: String,
+  })
+  created_at;
+
+  @Prop({
+    type: String,
+  })
+  updated_at;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
