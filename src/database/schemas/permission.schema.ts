@@ -32,11 +32,6 @@ export class Permission {
   @Prop({
     type: String,
   })
-  permission_type;
-
-  @Prop({
-    type: String,
-  })
   title;
 
   @Prop({

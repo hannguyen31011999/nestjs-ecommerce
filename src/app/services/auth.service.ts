@@ -28,6 +28,7 @@ export class AuthService extends BaseController {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return this.getResponse(null);
       const { accessToken, refreshToken } = await this.getTokens(user);
+      await this.updateToken(user.id, '', '');
       await this.updateToken(user.id, accessToken, refreshToken);
       this.setter(HttpStatus.OK, msgResponse.signIn.success);
       return this.getResponse({ accessToken, refreshToken, user });
@@ -98,7 +99,7 @@ export class AuthService extends BaseController {
         },
       ),
     ]);
-
+    console.log('accessToken', accessToken);
     return {
       accessToken,
       refreshToken,

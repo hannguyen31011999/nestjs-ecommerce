@@ -17,14 +17,18 @@ export class UserService {
   ) {}
 
   async nextValueSequence() {
-    const user = await this.userModel.findOne(
-      {},
-      {},
-      {
-        sort: { createdAt: -1 },
-      },
-    );
-    return user ? user.id + 1 : 1;
+    try {
+      const user = await this.userModel.findOne(
+        {},
+        {},
+        {
+          sort: { createdAt: -1 },
+        },
+      );
+      return user ? user.id + 1 : 1;
+    } catch (err) {
+      throw new HttpException(msgResponse[400], HttpStatus.BAD_REQUEST);
+    }
   }
 
   async getListUser(params: UserFilter): Promise<ResponseListUser> {
@@ -126,7 +130,9 @@ export class UserService {
             id,
           },
           {
-            [properties]: value,
+            $set: {
+              [properties]: value,
+            },
           },
           {
             new: true,

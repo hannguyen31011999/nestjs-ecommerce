@@ -20,14 +20,18 @@ export class RoleService {
   ) {}
 
   async nextValueSequence() {
-    const role = await this.roleModel.findOne(
-      {},
-      {},
-      {
-        sort: { createdAt: -1 },
-      },
-    );
-    return role ? role.id + 1 : 1;
+    try {
+      const role = await this.roleModel.findOne(
+        {},
+        {},
+        {
+          sort: { createdAt: -1 },
+        },
+      );
+      return role ? role.id + 1 : 1;
+    } catch (err) {
+      throw new HttpException(msgResponse[400], HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Post()
