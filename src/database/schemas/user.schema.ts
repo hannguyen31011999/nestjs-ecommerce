@@ -16,87 +16,95 @@ export class User {
     type: Number,
     unique: true,
   })
-  id;
+  id: number;
 
   @Prop({
     type: Number,
   })
-  role_id;
+  role_id: number | null;
 
   @Prop({
     type: String,
     unique: true,
     maxlength: 255,
   })
-  email;
+  email: string;
 
   @Prop({
     type: String,
     maxlength: 255,
   })
-  password;
+  password: string;
 
   @Prop({
     type: String,
     maxlength: 255,
   })
-  full_name;
+  full_name: string;
 
   @Prop({
     type: String,
     unique: true,
     maxlength: 15,
   })
-  phone_number;
+  phone_number: string;
 
   @Prop({
     type: Boolean,
   })
-  is_active;
+  is_active: boolean;
 
   @Prop({
     type: String,
   })
-  access_token;
+  access_token: string | null;
 
   @Prop({
     type: String,
   })
-  refresh_token;
+  refresh_token: string | null;
 
   @Prop({
     type: String,
   })
-  birth_date;
+  birth_date: string | null;
 
   @Prop({
     type: String,
   })
-  avatar;
+  avatar: string | null;
 
   @Prop({
     type: String,
     maxlength: 255,
   })
-  address;
+  address: string | null;
 
   @Prop({
     type: Number,
   })
-  gender;
+  gender: number;
 
   @Prop({
     type: String,
   })
-  created_at;
+  created_at: string;
 
   @Prop({
     type: String,
   })
-  updated_at;
+  updated_at: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.set('toJSON', {
+  transform: (_, ret) => {
+    delete ret._id;
+    delete ret.__v;
+    return ret;
+  },
+});
 
 UserSchema.virtual('users', {
   ref: Role.name,

@@ -16,7 +16,7 @@ export class EmailExistsPipe implements PipeTransform {
         statusCode: 400,
         message: msgResponse[422],
         errors: {
-          email: 'Email already exists',
+          email: msgResponse.exist.email,
         },
       });
     }

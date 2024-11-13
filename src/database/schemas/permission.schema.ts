@@ -16,28 +16,38 @@ export class Permission {
     unique: true,
     auto: true,
   })
-  id;
+  id: number;
 
   @Prop({
     type: Number,
   })
-  parent_id;
+  parent_id: number;
 
   @Prop({
     type: String,
     unique: true,
   })
-  permission_code;
+  permission_code: string;
 
   @Prop({
     type: String,
   })
-  title;
+  title: string;
+
+  @Prop({
+    type: String,
+  })
+  created_at: string;
+
+  @Prop({
+    type: String,
+  })
+  updated_at: string;
 
   @Prop({
     type: Boolean,
   })
-  deleted_at;
+  deleted_at: boolean;
 }
 
 export const PermissionSchema = SchemaFactory.createForClass(Permission);

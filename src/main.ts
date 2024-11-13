@@ -43,7 +43,11 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('/api/swagger', app, document);
+  SwaggerModule.setup('/api/swagger', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true, // Keeps the auth token on page reloads
+    },
+  });
 
   await app.listen(3000);
 

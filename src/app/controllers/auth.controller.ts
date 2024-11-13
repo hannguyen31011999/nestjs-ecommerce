@@ -1,12 +1,12 @@
 import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { msgResponse } from 'src/common/constant';
+import { User } from 'src/database/schemas/user.schema';
+import { Auth } from '../decorators/auth.decorator';
 import { RefreshTokenDto, SignInDto } from '../dto/auth/auth.dto';
 import { AccessTokenGuard } from '../guards/access-token.guard';
 import { AuthService } from '../services/auth.service';
 import { BaseController } from './base.controller';
-import { Auth } from '../decorators/auth.decorator';
-import { IUser } from '../types/user';
 
 @ApiBearerAuth()
 @ApiTags('auth')
@@ -23,7 +23,7 @@ export class AuthController extends BaseController {
 
   @UseGuards(AccessTokenGuard)
   @Post('sign-out')
-  async signOut(@Auth('user') user: IUser) {
+  async signOut(@Auth('user') user: User) {
     return this.authService.logout(user.access_token);
   }
 

@@ -15,8 +15,6 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const exceptionResponse = exception.getResponse();
 
-    console.log('exceptionResponse', exceptionResponse);
-
     const customResponse = {
       statusCode: status,
       message: msgResponse[422],

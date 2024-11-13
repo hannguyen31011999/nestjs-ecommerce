@@ -3,6 +3,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AccessTokenGuard } from '../guards/access-token.guard';
 import { BaseController } from './base.controller';
 import { PermissionService } from '../services/permission.service';
+import { msgResponse } from 'src/common/constant';
 
 @ApiBearerAuth()
 @ApiTags('permission')
@@ -14,6 +15,8 @@ export class PermissionController extends BaseController {
   }
   @Get()
   async getPermission() {
-    return await this.permissionService.getListPermission();
+    const data = await this.permissionService.getListPermission();
+    this.setter(HttpStatus.OK, msgResponse.permission.read);
+    return this.getResponse(data);
   }
 }

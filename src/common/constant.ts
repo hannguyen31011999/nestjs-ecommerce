@@ -35,6 +35,14 @@ export const msgResponse = {
     update: 'Update role successfully',
     delete: 'Delete role successfully',
   },
+  permission: {
+    read: 'Get permissions successfully',
+  },
+  exist: {
+    roleName: 'Role name already exists',
+    phoneNumber: 'Phone number already exists',
+    email: 'Email already exists',
+  },
   400: 'Bad request',
   500: 'Internal error server',
   422: 'Validate failed',

@@ -9,29 +9,71 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { jwtConstants, msgResponse } from 'src/common/constant';
 import { BaseController } from '../controllers/base.controller';
-import { IUser } from '../types/user';
 import { UserService } from './user.service';
+import { PermissionService } from './permission.service';
+import { RoleService } from './role.service';
+import { Role } from 'src/database/schemas/role.schema';
+import { FlattenMaps } from 'mongoose';
+import { User } from 'src/database/schemas/user.schema';
 
 @Injectable()
 export class AuthService extends BaseController {
   constructor(
     @Inject(forwardRef(() => UserService)) private userService: UserService,
+    private permissionService: PermissionService,
+    private roleService: RoleService,
     private jwtService: JwtService,
   ) {
     super(HttpStatus.BAD_REQUEST, msgResponse[400]);
   }
 
-  async signIn(email: string, password: string) {
+  async signIn(_email: string, _password: string) {
     try {
-      const user = await this.userService.getDetailUserByField('email', email);
+      const user = await this.userService.getDetailUserByField('email', _email);
+      const role: FlattenMaps<Role> =
+        await this.roleService.getDetailRoleByField('id', user.role_id);
+      const permission = await this.permissionService.getPermissionByCollection(
+        JSON.parse(role.permission_id),
+      );
       if (!user) return this.getResponse(null);
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await bcrypt.compare(_password, user.password);
       if (!isMatch) return this.getResponse(null);
       const { accessToken, refreshToken } = await this.getTokens(user);
-      await this.updateToken(user.id, '', '');
       await this.updateToken(user.id, accessToken, refreshToken);
       this.setter(HttpStatus.OK, msgResponse.signIn.success);
-      return this.getResponse({ accessToken, refreshToken, user });
+      const {
+        id,
+        role_id,
+        email,
+        full_name,
+        phone_number,
+        is_active,
+        birth_date,
+        avatar,
+        address,
+        gender,
+        created_at,
+        updated_at,
+      } = user;
+      return this.getResponse({
+        accessToken,
+        refreshToken,
+        user: {
+          id,
+          role_id,
+          email,
+          full_name,
+          phone_number,
+          is_active,
+          birth_date,
+          avatar,
+          address,
+          gender,
+          created_at,
+          updated_at,
+        },
+        permission,
+      });
     } catch (err) {
       throw new HttpException(msgResponse[400], HttpStatus.BAD_REQUEST);
     }
@@ -49,7 +91,6 @@ export class AuthService extends BaseController {
       messageCode = msgResponse.signOut.fail;
     }
     this.setter(statusCode, messageCode);
-    await this.updateToken(user.id, '', '');
     return this.getResponse(null);
   }
 
@@ -62,7 +103,7 @@ export class AuthService extends BaseController {
     let statusCode: number = HttpStatus.OK;
     let messageCode: string = msgResponse.refreshToken.success;
     let data: { accessToken: string; refreshToken: string } | null = null;
-    const user: IUser = await this.userService.getDetailUserByField(
+    const user: User = await this.userService.getDetailUserByField(
       'refresh_token',
       token,
     );
@@ -78,11 +119,37 @@ export class AuthService extends BaseController {
     return this.getResponse(data);
   }
 
-  async getTokens(user: IUser) {
+  async getTokens({
+    id,
+    role_id,
+    email,
+    full_name,
+    phone_number,
+    is_active,
+    birth_date,
+    avatar,
+    address,
+    gender,
+    created_at,
+    updated_at,
+  }: User) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          user,
+          user: {
+            id,
+            role_id,
+            email,
+            full_name,
+            phone_number,
+            is_active,
+            birth_date,
+            avatar,
+            address,
+            gender,
+            created_at,
+            updated_at,
+          },
         },
         {
           secret: jwtConstants.secret,
@@ -90,16 +157,13 @@ export class AuthService extends BaseController {
         },
       ),
       this.jwtService.signAsync(
-        {
-          user,
-        },
+        {},
         {
           secret: jwtConstants.secret,
           expiresIn: jwtConstants.expired.refresh_token,
         },
       ),
     ]);
-    console.log('accessToken', accessToken);
     return {
       accessToken,
       refreshToken,

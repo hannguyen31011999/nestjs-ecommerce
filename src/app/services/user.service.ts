@@ -2,11 +2,11 @@ import { UpdateUserDto } from './../dto/user/update-user.dto';
 import { Global, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Model } from 'mongoose';
+import { FlattenMaps, Model } from 'mongoose';
 import { msgResponse, saltOrRounds } from 'src/common/constant';
 import { User, UserDocument } from 'src/database/schemas/user.schema';
 import { convertPagination } from 'src/utils/pagination';
-import { IUser, ResponseListUser, UserFilter } from '../types/user';
+import { ResponseListUser, UserFilter } from '../types/user';
 import { CreateUserDto } from './../dto/user/create-user.dto';
 
 @Global()
@@ -35,13 +35,16 @@ export class UserService {
     try {
       const { page, limit } = convertPagination(params.page, params.limit);
       const total = await this.userModel.countDocuments();
-      const user = await this.userModel
+      const user: FlattenMaps<User>[] = await this.userModel
         .find()
+        .select('-_id -__v')
         .sort({
           id: -1,
         })
         .skip((page - 1) * limit)
-        .limit(limit);
+        .limit(limit)
+        .lean()
+        .exec();
       return {
         data: user,
         pagination: {
@@ -55,14 +58,18 @@ export class UserService {
     }
   }
 
-  async getDetailUserByField<T>(properties: keyof IUser, value: T) {
-    const user = await this.userModel.findOne({
-      [properties]: value,
-    });
+  async getDetailUserByField<T>(properties: keyof User, value: T) {
+    const user = await this.userModel
+      .findOne({
+        [properties]: value,
+      })
+      .select('-_id -__v')
+      .lean()
+      .exec();
     return user;
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<IUser> {
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
     try {
       const id = await this.nextValueSequence();
       const password = await bcrypt.hash(createUserDto.password, saltOrRounds);
@@ -70,14 +77,20 @@ export class UserService {
         ...createUserDto,
         id,
         password,
-      });
-      return newUser.save();
+      }).save();
+      return await this.userModel
+        .findOne({
+          id: newUser.id,
+        })
+        .select('-_id -__v')
+        .lean()
+        .exec();
     } catch (err) {
       throw new HttpException(msgResponse[400], HttpStatus.BAD_REQUEST);
     }
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<IUser> {
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     try {
       const user = await this.userModel
         .findOneAndUpdate(
@@ -89,15 +102,15 @@ export class UserService {
             new: true,
           },
         )
+        .select('-_id -__v')
         .exec();
-      if (user) return user;
       return user;
     } catch (err) {
       throw new HttpException(msgResponse[400], HttpStatus.BAD_REQUEST);
     }
   }
 
-  async updateStatus(id: string, isActive: boolean): Promise<IUser> {
+  async updateStatus(id: string, isActive: boolean): Promise<User> {
     try {
       const user = await this.userModel
         .findOneAndUpdate(
@@ -120,9 +133,9 @@ export class UserService {
   }
   async updateUserByField<T>(
     id: string,
-    properties: keyof IUser,
+    properties: keyof User,
     value: T,
-  ): Promise<IUser> {
+  ): Promise<User> {
     try {
       const user = await this.userModel
         .findOneAndUpdate(

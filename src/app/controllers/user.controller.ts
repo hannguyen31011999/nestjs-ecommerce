@@ -18,17 +18,18 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { msgResponse } from 'src/common/constant';
+import { User } from 'src/database/schemas/user.schema';
 import { CreateUserDto } from '../dto/user/create-user.dto';
 import {
   UpdateActiveUserDto,
   UpdateUserDto,
 } from '../dto/user/update-user.dto';
+import { AccessTokenGuard } from '../guards/access-token.guard';
 import { EmailExistsPipe } from '../pipes/email-exist.pipe';
 import { NumberPhoneExistsPipe } from '../pipes/number-phone-exist.pipe';
 import { UserService } from '../services/user.service';
-import { IUser, ResponseListUser, UserFilter } from '../types/user';
+import { ResponseListUser, UserFilter } from '../types/user';
 import { BaseController } from './base.controller';
-import { AccessTokenGuard } from '../guards/access-token.guard';
 @ApiBearerAuth()
 @ApiTags('user')
 @Controller('user')
@@ -63,7 +64,7 @@ export class UserController extends BaseController {
   @UsePipes(NumberPhoneExistsPipe)
   @UsePipes(EmailExistsPipe)
   async createUser(@Body() createUserDto: CreateUserDto) {
-    const user: IUser | undefined | null =
+    const user: User | undefined | null =
       await this.userService.createUser(createUserDto);
     if (user) {
       this.setter(HttpStatus.OK, msgResponse.user.create);
@@ -77,7 +78,7 @@ export class UserController extends BaseController {
   })
   @Get('/:id')
   async getUserById(@Param('id') id) {
-    const user: IUser | undefined | null =
+    const user: User | undefined | null =
       await this.userService.getDetailUserByField('id', id);
     if (user) {
       this.setter(HttpStatus.OK, msgResponse.user.read);

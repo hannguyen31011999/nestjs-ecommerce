@@ -17,38 +17,38 @@ export class Role {
     unique: true,
     auto: true,
   })
-  id;
+  id: number;
 
   @Prop({
     type: String,
     unique: true,
   })
-  role_name;
+  role_name: string;
 
   @Prop({
     type: String,
   })
-  role_desc;
+  role_desc: string;
 
   @Prop({
     type: String,
   })
-  permission_id;
+  permission_id: string;
 
   @Prop({
     type: String,
   })
-  created_at;
+  created_at: string;
 
   @Prop({
     type: String,
   })
-  updated_at;
+  updated_at: string;
 
   @Prop({
     type: Boolean,
   })
-  deleted_at;
+  deleted_at: boolean;
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);

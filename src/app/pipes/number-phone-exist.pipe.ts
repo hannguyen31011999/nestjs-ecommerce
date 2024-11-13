@@ -16,7 +16,7 @@ export class NumberPhoneExistsPipe implements PipeTransform {
         statusCode: 400,
         message: msgResponse[422],
         errors: {
-          phone_number: 'Phone number already exists',
+          phone_number: msgResponse.exist.phoneNumber,
         },
       });
     }
